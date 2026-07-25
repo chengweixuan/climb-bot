@@ -1,0 +1,12 @@
+.env
+.venv/
+bot.log
+.bot.pid
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.DS_Store
+.claude/
+*.egg-info/
