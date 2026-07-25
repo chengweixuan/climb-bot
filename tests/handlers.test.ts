@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { splitPollOptions, buildPollQuestion } from "../src/handlers";
+import { splitPollOptions, buildPollQuestion } from "../src/handlers.js";
 
 describe("splitPollOptions", () => {
   it("keeps a small list as a single group", () => {

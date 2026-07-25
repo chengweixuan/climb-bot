@@ -7,7 +7,7 @@ import {
   handleGyms,
   handleInfo,
   handleInspire,
-} from "./handlers";
+} from "./handlers.js";
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
 if (!token) throw new Error("Missing TELEGRAM_BOT_TOKEN environment variable");

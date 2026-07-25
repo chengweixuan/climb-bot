@@ -1,5 +1,5 @@
 import { CommandContext, Context } from "grammy";
-import { loadAllGymOptions, loadGymOptions, loadInspirationQuotes } from "./config";
+import { loadAllGymOptions, loadGymOptions, loadInspirationQuotes } from "./config.js";
 
 const MAX_POLL_OPTIONS = 10;
 const POLL_QUESTION = "Where are we climbing this week?";

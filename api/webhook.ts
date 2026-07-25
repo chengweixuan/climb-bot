@@ -1,5 +1,5 @@
 import { webhookCallback } from "grammy";
-import { bot } from "../src/bot";
+import { bot } from "../src/bot.js";
 
 const secretToken = process.env.TELEGRAM_WEBHOOK_SECRET;
 

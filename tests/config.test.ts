@@ -4,7 +4,7 @@ import {
   loadGymOptions,
   loadAllGymOptions,
   loadInspirationQuotes,
-} from "../src/config";
+} from "../src/config.js";
 
 const FIXTURES = join(__dirname, "..");
 
