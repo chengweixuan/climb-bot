@@ -13,15 +13,16 @@ Telegram bot that helps a climbing group in Singapore coordinate weekly sessions
 
 ```
 api/
-  webhook.py       — Vercel serverless entry point, receives Telegram webhook POSTs
-src/climb_bot/
-  handlers.py      — command handler functions
-  config.py        — Settings dataclass, env loading, JSON file loaders
+  webhook.ts       — Vercel serverless entry point (grammY webhookCallback)
+src/
+  bot.ts           — bot setup, command registration
+  handlers.ts      — command handler implementations
+  config.ts        — JSON file loaders
 scripts/
-  set_webhook.py   — utility to register/clear webhook URL with Telegram
+  set-webhook.ts   — register/clear webhook URL with Telegram
 ```
 
-Stateless webhook architecture using `python-telegram-bot` (async). No database, no persistent process — each request is handled independently.
+Stateless webhook architecture using grammY. No database, no persistent process — each request is handled independently.
 
 ## Data Files
 
@@ -40,13 +41,14 @@ Environment variables (set in Vercel dashboard for production, `.env` for local 
 ## Running Tests
 
 ```bash
-pip install -e ".[dev]"
-pytest tests/ -v
+npm test           # vitest
+npx tsc --noEmit   # type check
 ```
 
 ## Conventions
 
-- Python 3.11+, setuptools build, editable install (`pip install -e .`)
-- TDD — tests in `tests/`, run with pytest
+- TypeScript, ESM-style imports, strict mode
+- grammY as Telegram bot framework
+- vitest for unit tests
 - Specs for new features go in `docs/specs/`
 - Implementation plans go in `docs/superpowers/plans/`

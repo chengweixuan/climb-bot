@@ -23,7 +23,7 @@ A Telegram bot that helps a climbing group coordinate weekly sessions. Deployed 
 ```bash
 cp .env.example .env
 # Fill in TELEGRAM_BOT_TOKEN and TELEGRAM_WEBHOOK_SECRET
-python scripts/set_webhook.py https://your-app.vercel.app/api/webhook
+npm run set-webhook -- https://your-app.vercel.app/api/webhook
 ```
 
 ### 4. Add the bot to your group
@@ -49,16 +49,18 @@ Telegram polls allow up to 10 options. If more than 10 are enabled, the bot send
 ## Local development
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e ".[dev]"
+npm install
 cp .env.example .env
 # Edit .env with your bot token
 
 # Run tests
-pytest tests/ -v
+npm test
+
+# Type check
+npx tsc --noEmit
 
 # Use ngrok to test webhook locally
-ngrok http 8000
-python scripts/set_webhook.py https://your-ngrok-url.ngrok.io/api/webhook
+ngrok http 3000
+npm run set-webhook -- https://your-ngrok-url.ngrok.io/api/webhook
+npx vercel dev
 ```
