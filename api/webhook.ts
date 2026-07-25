@@ -3,6 +3,6 @@ import { bot } from "../src/bot.js";
 
 const secretToken = process.env.TELEGRAM_WEBHOOK_SECRET;
 
-export default webhookCallback(bot, "std/http", {
+export default webhookCallback(bot, "express", {
   secretToken,
 });
