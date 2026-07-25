@@ -4,19 +4,23 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "climb-bot"
-version = "0.1.0"
-description = "Telegram bot for weekly climbing gym polls."
+version = "0.2.0"
+description = "Telegram bot for climbing gym coordination — deployed on Vercel."
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-  "APScheduler>=3.10,<4",
   "python-dotenv>=1.0,<2",
   "python-telegram-bot>=21,<23"
 ]
 
-[project.scripts]
-climb-bot = "climb_bot.main:main"
-climb-bot-send-poll = "climb_bot.main:send_poll_once"
+[project.optional-dependencies]
+dev = [
+  "pytest>=7",
+  "pytest-asyncio>=0.21",
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "strict"

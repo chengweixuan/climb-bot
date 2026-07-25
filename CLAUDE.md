@@ -1,24 +1,27 @@
 # Climb Bot
 
-Telegram bot that helps a climbing group in Singapore coordinate weekly sessions.
+Telegram bot that helps a climbing group in Singapore coordinate weekly sessions. Deployed as a Vercel serverless function.
 
 ## Capabilities
 
 - **Gym poll** (`/climbwhere`) — asks which gym to visit this week. Splits into multiple polls if >10 options.
 - **Availability poll** (`/climbwhen`) — asks which days people are free. Supports "this week" or "next week" via inline buttons.
-- **Inspiration quotes** (`/inspire`) — sends a random climbing quote. Also sent automatically on a daily schedule.
-- **Scheduled poll** — automatically sends the gym poll weekly (default: Sunday 8pm SGT).
+- **Inspiration quotes** (`/inspire`) — sends a random climbing quote.
 - **Info commands** (`/start`, `/info`, `/chatid`, `/gyms`) — help text and diagnostics.
 
 ## Architecture
 
 ```
+api/
+  webhook.py       — Vercel serverless entry point, receives Telegram webhook POSTs
 src/climb_bot/
-  main.py    — bot setup, command handlers, scheduling, poll logic
-  config.py  — Settings dataclass, env loading, JSON file loaders
+  handlers.py      — command handler functions
+  config.py        — Settings dataclass, env loading, JSON file loaders
+scripts/
+  set_webhook.py   — utility to register/clear webhook URL with Telegram
 ```
 
-Single-module bot using `python-telegram-bot` (async) + `APScheduler`. No database — all state is in JSON files and environment variables.
+Stateless webhook architecture using `python-telegram-bot` (async). No database, no persistent process — each request is handled independently.
 
 ## Data Files
 
@@ -26,23 +29,24 @@ Single-module bot using `python-telegram-bot` (async) + `APScheduler`. No databa
 |------|---------|
 | `gyms.json` | Full reference list of Singapore climbing gyms |
 | `poll_gyms.json` | Subset of gyms included in the weekly poll |
-| `inspiration_quotes.json` | Quotes pool for `/inspire` and auto-quotes |
+| `inspiration_quotes.json` | Quotes pool for `/inspire` |
 
 ## Configuration
 
-All config via `.env` (loaded by python-dotenv):
+Environment variables (set in Vercel dashboard for production, `.env` for local dev):
 - `TELEGRAM_BOT_TOKEN` — required
-- `TELEGRAM_CHAT_ID` — target group chat (required for scheduled polls)
-- `TIMEZONE`, `POLL_DAY_OF_WEEK`, `POLL_HOUR`, `POLL_MINUTE` — poll schedule
-- `QUOTE_HOUR`, `QUOTE_MINUTE` — daily quote schedule
+- `TELEGRAM_WEBHOOK_SECRET` — optional, verifies inbound requests from Telegram
 
-## Running
+## Running Tests
 
-- `climb-bot` — start long-running bot with polling + scheduler
-- `climb-bot-send-poll` — send one poll and exit (used by GitHub Action)
+```bash
+pip install -e ".[dev]"
+pytest tests/ -v
+```
 
 ## Conventions
 
 - Python 3.11+, setuptools build, editable install (`pip install -e .`)
-- No tests yet — specs-driven development starting now
+- TDD — tests in `tests/`, run with pytest
 - Specs for new features go in `docs/specs/`
+- Implementation plans go in `docs/superpowers/plans/`

@@ -1,95 +1,64 @@
 # Climb Bot
 
-A small Telegram bot that sends a weekly poll asking which climbing gym the group wants to visit.
+A Telegram bot that helps a climbing group coordinate weekly sessions. Deployed as a serverless function on Vercel.
 
-## How Telegram bot creation works
+## Setup
 
-Telegram bots are created through Telegram's official bot called `@BotFather`.
+### 1. Create the bot
 
 1. Open Telegram and search for `@BotFather`.
-2. Send `/newbot`.
-3. Pick a display name and username for the bot.
-4. BotFather gives you a bot token.
-5. Put that token in `.env` as `TELEGRAM_BOT_TOKEN`.
-6. Add the bot to your Telegram group.
-7. Run `/chatid` in the group to get the group chat ID.
-8. Put that ID in `.env` as `TELEGRAM_CHAT_ID`.
+2. Send `/newbot` and follow the prompts.
+3. Copy the bot token.
 
-The bot token is effectively the bot's password. Do not commit it to git or share it publicly.
+### 2. Deploy to Vercel
 
-## Local setup
+1. Fork/push this repo to GitHub.
+2. Connect the repo to [Vercel](https://vercel.com).
+3. Set environment variables in Vercel dashboard:
+   - `TELEGRAM_BOT_TOKEN` — your bot token from BotFather
+   - `TELEGRAM_WEBHOOK_SECRET` — any random string (used to verify requests from Telegram)
+
+### 3. Register the webhook
 
 ```bash
-cd ~/personal/climb-bot
-python3 -m venv .venv
-source .venv/bin/activate
-pip install -e .
 cp .env.example .env
+# Fill in TELEGRAM_BOT_TOKEN and TELEGRAM_WEBHOOK_SECRET
+python scripts/set_webhook.py https://your-app.vercel.app/api/webhook
 ```
 
-Edit `.env` and replace `TELEGRAM_BOT_TOKEN`.
+### 4. Add the bot to your group
 
-Then run:
-
-```bash
-climb-bot
-```
-
-To send one poll and exit:
-
-```bash
-climb-bot-send-poll
-```
+Add the bot to a Telegram group. It will respond to commands immediately.
 
 ## Bot commands
 
-- `/start` - show a short help message
-- `/info` - show what the bot does and list its commands
-- `/chatid` - print the current chat ID
-- `/gyms` - list all known gyms from `gyms.json`
-- `/climbwhere` - send the climbing poll immediately
-- `/climbwhen` - send a multiple-choice availability poll for Monday through Sunday
-- `/inspire` - send a random climbing quote
+- `/start` — show help message
+- `/info` — show what the bot does and list commands
+- `/chatid` — print the current chat ID
+- `/gyms` — list all known gyms from `gyms.json`
+- `/climbwhere` — send the climbing gym poll
+- `/climbwhen` — send availability poll (choose this week or next week)
+- `/inspire` — send a random climbing quote
 
 ## Gym options
 
-Edit `poll_gyms.json` to choose which gyms appear in the poll:
+Edit `poll_gyms.json` to choose which gyms appear in the poll. Only enabled gyms are included. `gyms.json` is the full Singapore gym reference list.
 
-```json
-[
-  { "name": "Gym A", "enabled": true },
-  { "name": "Gym B", "enabled": true }
-]
+Telegram polls allow up to 10 options. If more than 10 are enabled, the bot sends numbered polls.
+
+## Local development
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+cp .env.example .env
+# Edit .env with your bot token
+
+# Run tests
+pytest tests/ -v
+
+# Use ngrok to test webhook locally
+ngrok http 8000
+python scripts/set_webhook.py https://your-ngrok-url.ngrok.io/api/webhook
 ```
-
-Only enabled gyms are included in the poll. `gyms.json` is kept as the full Singapore gym reference list.
-
-Telegram polls allow up to 10 options. If `poll_gyms.json` has more than 10 enabled gyms, the bot sends numbered polls like `(1/3)`, `(2/3)`, and `(3/3)`.
-
-## Inspiration quotes
-
-Edit `inspiration_quotes.json` to change the annoying inspirational climbing quotes used by `/inspire`.
-
-Set `QUOTE_INTERVAL_MINUTES` in `.env` to make the bot automatically send quotes to `TELEGRAM_CHAT_ID`. Use `0` to disable automatic quotes.
-
-## Weekly schedule
-
-The default schedule is Sunday 8:00pm Singapore time:
-
-```env
-TIMEZONE=Asia/Singapore
-POLL_DAY_OF_WEEK=sun
-POLL_HOUR=20
-POLL_MINUTE=0
-```
-
-The scheduled poll only runs if `TELEGRAM_CHAT_ID` is set.
-
-## GitHub Action
-
-`.github/workflows/weekly-climbing-poll.yml` sends the Telegram poll every Sunday at 8:00pm Singapore time. It can also be run manually from the GitHub Actions tab.
-
-Set these repository secrets before enabling it:
-
-- `TELEGRAM_BOT_TOKEN`
-- `TELEGRAM_CHAT_ID`

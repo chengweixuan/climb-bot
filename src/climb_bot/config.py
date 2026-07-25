@@ -4,7 +4,6 @@ import json
 import os
 from dataclasses import dataclass
 from pathlib import Path
-from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
 
@@ -19,33 +18,16 @@ MAX_POLL_OPTION_LENGTH = 100
 @dataclass(frozen=True)
 class Settings:
     bot_token: str
-    chat_id: int | None
-    timezone: ZoneInfo
-    poll_question: str
-    poll_day_of_week: str
-    poll_hour: int
-    poll_minute: int
-    quote_hour: int
-    quote_minute: int
+    webhook_secret: str | None
 
 
 def load_settings() -> Settings:
     load_dotenv(PROJECT_ROOT / ".env")
 
     bot_token = required_env("TELEGRAM_BOT_TOKEN")
-    chat_id = optional_int_env("TELEGRAM_CHAT_ID")
+    webhook_secret = os.getenv("TELEGRAM_WEBHOOK_SECRET") or None
 
-    return Settings(
-        bot_token=bot_token,
-        chat_id=chat_id,
-        timezone=ZoneInfo(os.getenv("TIMEZONE", "Asia/Singapore")),
-        poll_question=os.getenv("POLL_QUESTION", "Where are we climbing this week?"),
-        poll_day_of_week=os.getenv("POLL_DAY_OF_WEEK", "sun"),
-        poll_hour=int(os.getenv("POLL_HOUR", "20")),
-        poll_minute=int(os.getenv("POLL_MINUTE", "0")),
-        quote_hour=int(os.getenv("QUOTE_HOUR", "12")),
-        quote_minute=int(os.getenv("QUOTE_MINUTE", "0")),
-    )
+    return Settings(bot_token=bot_token, webhook_secret=webhook_secret)
 
 
 def load_gym_options(path: Path = POLL_GYMS_FILE) -> list[str]:
@@ -95,10 +77,3 @@ def required_env(name: str) -> str:
     if not value:
         raise RuntimeError(f"Missing required environment variable: {name}")
     return value
-
-
-def optional_int_env(name: str) -> int | None:
-    value = os.getenv(name)
-    if not value:
-        return None
-    return int(value)
