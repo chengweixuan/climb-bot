@@ -1,8 +1,7 @@
 import { CommandContext, Context } from "grammy";
-import { loadAllGymOptions, loadGymOptions, loadInspirationQuotes } from "./config.js";
+import { loadAllGymOptions, loadInspirationQuotes } from "./config.js";
 
 const MAX_POLL_OPTIONS = 10;
-const POLL_QUESTION = "Where are we climbing this week?";
 const CLIMB_WHEN_OPTIONS = [
   "Mon",
   "Tue",
@@ -22,8 +21,7 @@ Commands:
 /chatid - show this chat ID
 /gyms - list all known gyms
 /setgyms - choose which gyms your group frequents
-/climbwhere - vote on where to climb (all gyms)
-/climbwhere2 - vote on where to climb (group's gyms)
+/climbwhere - vote on where to climb (group's gyms)
 /climbwhen - vote on which days people are free
 /inspire - receive questionable climbing wisdom`;
 
@@ -41,20 +39,6 @@ export async function handleGyms(ctx: CommandContext<Context>): Promise<void> {
   const options = loadAllGymOptions();
   const text = "Gym options:\n" + options.map((o) => `- ${o}`).join("\n");
   await ctx.reply(text);
-}
-
-export async function handleClimbwhere(
-  ctx: CommandContext<Context>
-): Promise<void> {
-  const options = loadGymOptions();
-  const groups = splitPollOptions(options);
-
-  for (let i = 0; i < groups.length; i++) {
-    await ctx.api.sendPoll(ctx.chat.id, buildPollQuestion(POLL_QUESTION, i + 1, groups.length), groups[i], {
-      is_anonymous: false,
-      allows_multiple_answers: false,
-    });
-  }
 }
 
 export async function handleClimbwhen(

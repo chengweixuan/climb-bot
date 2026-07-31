@@ -14,7 +14,7 @@ vi.mock("../src/config.js", () => ({
 }));
 
 import { getGroupGyms } from "../src/kv.js";
-import { handleClimbwhere2 } from "../src/climbwhere2-handler.js";
+import { handleClimbwhere } from "../src/climbwhere-handler.js";
 
 const mockedGetGroupGyms = vi.mocked(getGroupGyms);
 
@@ -30,11 +30,11 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-describe("handleClimbwhere2", () => {
+describe("handleClimbwhere", () => {
   it("replies with setup prompt when no preferences saved", async () => {
     mockedGetGroupGyms.mockResolvedValue(null);
     const ctx = createCtx();
-    await handleClimbwhere2(ctx);
+    await handleClimbwhere(ctx);
 
     expect(ctx.reply).toHaveBeenCalledWith(
       expect.stringContaining("/setgyms")
@@ -45,7 +45,7 @@ describe("handleClimbwhere2", () => {
   it("sends poll with saved gyms", async () => {
     mockedGetGroupGyms.mockResolvedValue(["Fit Bloc (Kent Ridge)", "Climba"]);
     const ctx = createCtx();
-    await handleClimbwhere2(ctx);
+    await handleClimbwhere(ctx);
 
     expect(ctx.api.sendPoll).toHaveBeenCalledWith(
       123,
@@ -58,7 +58,7 @@ describe("handleClimbwhere2", () => {
   it("filters out gyms no longer in gyms.json", async () => {
     mockedGetGroupGyms.mockResolvedValue(["Fit Bloc (Kent Ridge)", "Climba", "Nonexistent Gym"]);
     const ctx = createCtx();
-    await handleClimbwhere2(ctx);
+    await handleClimbwhere(ctx);
 
     expect(ctx.api.sendPoll).toHaveBeenCalledWith(
       123,
@@ -71,7 +71,7 @@ describe("handleClimbwhere2", () => {
   it("treats all-filtered-out as no preferences", async () => {
     mockedGetGroupGyms.mockResolvedValue(["Nonexistent Gym"]);
     const ctx = createCtx();
-    await handleClimbwhere2(ctx);
+    await handleClimbwhere(ctx);
 
     expect(ctx.reply).toHaveBeenCalledWith(expect.stringContaining("at least 2 gyms"));
     expect(ctx.api.sendPoll).not.toHaveBeenCalled();
@@ -80,7 +80,7 @@ describe("handleClimbwhere2", () => {
   it("replies with setup prompt when only 1 gym saved", async () => {
     mockedGetGroupGyms.mockResolvedValue(["Climba"]);
     const ctx = createCtx();
-    await handleClimbwhere2(ctx);
+    await handleClimbwhere(ctx);
 
     expect(ctx.reply).toHaveBeenCalledWith(
       expect.stringContaining("at least 2 gyms")

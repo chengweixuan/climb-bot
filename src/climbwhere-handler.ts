@@ -5,7 +5,7 @@ import { splitPollOptions, buildPollQuestion } from "./handlers.js";
 
 const POLL_QUESTION = "Where are we climbing this week?";
 
-export async function handleClimbwhere2(ctx: CommandContext<Context>): Promise<void> {
+export async function handleClimbwhere(ctx: CommandContext<Context>): Promise<void> {
   const chatId = ctx.chat.id;
   const saved = await getGroupGyms(chatId);
 

@@ -5,28 +5,9 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = join(__dirname, "..");
 
-const MAX_POLL_OPTION_LENGTH = 100;
-
 interface GymEntry {
   name: string;
   enabled?: boolean;
-}
-
-export function loadGymOptions(
-  path = join(PROJECT_ROOT, "poll_gyms.json")
-): string[] {
-  const options = loadGymNames(path);
-
-  if (options.length < 2) {
-    throw new Error("Telegram polls need at least two enabled gym options.");
-  }
-
-  const tooLong = options.filter((o) => o.length > MAX_POLL_OPTION_LENGTH);
-  if (tooLong.length > 0) {
-    throw new Error("Telegram poll options must be 100 characters or fewer.");
-  }
-
-  return options;
 }
 
 export function loadAllGymOptions(
