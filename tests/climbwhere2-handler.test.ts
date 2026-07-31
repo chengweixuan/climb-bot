@@ -56,14 +56,14 @@ describe("handleClimbwhere2", () => {
   });
 
   it("filters out gyms no longer in gyms.json", async () => {
-    mockedGetGroupGyms.mockResolvedValue(["Fit Bloc (Kent Ridge)", "Nonexistent Gym"]);
+    mockedGetGroupGyms.mockResolvedValue(["Fit Bloc (Kent Ridge)", "Climba", "Nonexistent Gym"]);
     const ctx = createCtx();
     await handleClimbwhere2(ctx);
 
     expect(ctx.api.sendPoll).toHaveBeenCalledWith(
       123,
       expect.any(String),
-      ["Fit Bloc (Kent Ridge)"],
+      ["Fit Bloc (Kent Ridge)", "Climba"],
       expect.any(Object)
     );
   });
@@ -73,7 +73,18 @@ describe("handleClimbwhere2", () => {
     const ctx = createCtx();
     await handleClimbwhere2(ctx);
 
-    expect(ctx.reply).toHaveBeenCalledWith(expect.stringContaining("/setgyms"));
+    expect(ctx.reply).toHaveBeenCalledWith(expect.stringContaining("at least 2 gyms"));
+    expect(ctx.api.sendPoll).not.toHaveBeenCalled();
+  });
+
+  it("replies with setup prompt when only 1 gym saved", async () => {
+    mockedGetGroupGyms.mockResolvedValue(["Climba"]);
+    const ctx = createCtx();
+    await handleClimbwhere2(ctx);
+
+    expect(ctx.reply).toHaveBeenCalledWith(
+      expect.stringContaining("at least 2 gyms")
+    );
     expect(ctx.api.sendPoll).not.toHaveBeenCalled();
   });
 });

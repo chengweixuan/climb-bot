@@ -17,8 +17,8 @@ export async function handleClimbwhere2(ctx: CommandContext<Context>): Promise<v
   const allGyms = new Set(loadAllGymOptions());
   const validGyms = saved.filter((gym) => allGyms.has(gym));
 
-  if (validGyms.length === 0) {
-    await ctx.reply("No gyms configured yet — use /setgyms to pick your group's gyms first.");
+  if (validGyms.length < 2) {
+    await ctx.reply("You need at least 2 gyms for a poll — use /setgyms to add more.");
     return;
   }
 
