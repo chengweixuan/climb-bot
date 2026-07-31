@@ -27,13 +27,12 @@ export async function handleSetgyms(ctx: CommandContext<Context>): Promise<void>
 }
 
 export async function handleSetgymsCallback(ctx: Context): Promise<void> {
-  await ctx.answerCallbackQuery();
-
   const chatId = ctx.chat!.id;
   const data = ctx.callbackQuery?.data ?? "";
   const state = await getSetgymsState(chatId);
 
   if (!state) {
+    await ctx.answerCallbackQuery();
     await ctx.editMessageText("Session expired. Use /setgyms to start again.");
     return;
   }
@@ -55,6 +54,7 @@ async function handleBrandToggle(
   data: string,
   state: SetgymsState
 ): Promise<void> {
+  await ctx.answerCallbackQuery();
   const brand = data.replace("setgyms:brand:", "");
 
   if (state.selectedBrands.includes(brand)) {
@@ -80,6 +80,7 @@ async function handleBrandNext(
     return;
   }
 
+  await ctx.answerCallbackQuery();
   state.step = "locations";
   state.currentBrandIndex = 0;
   await setSetgymsState(chatId, state);
@@ -93,6 +94,7 @@ async function handleGymToggle(
   data: string,
   state: SetgymsState
 ): Promise<void> {
+  await ctx.answerCallbackQuery();
   const gym = data.replace("setgyms:gym:", "");
 
   if (state.selectedGyms.includes(gym)) {
@@ -115,6 +117,7 @@ async function handleLocationDone(
   chatId: number,
   state: SetgymsState
 ): Promise<void> {
+  await ctx.answerCallbackQuery();
   state.currentBrandIndex++;
 
   if (state.currentBrandIndex < state.selectedBrands.length) {

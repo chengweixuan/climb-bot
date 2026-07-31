@@ -132,6 +132,22 @@ describe("handleSetgymsCallback — next", () => {
       expect.any(Object)
     );
   });
+
+  it("shows validation toast and does not transition when no brands selected", async () => {
+    mockedGetState.mockResolvedValue({
+      step: "brands",
+      selectedBrands: [],
+      selectedGyms: [],
+      currentBrandIndex: 0,
+    });
+
+    const ctx = createCallbackCtx("setgyms:next");
+    await handleSetgymsCallback(ctx);
+
+    expect(ctx.answerCallbackQuery).toHaveBeenCalledWith({ text: "Select at least one brand." });
+    expect(mockedSetState).not.toHaveBeenCalled();
+    expect(ctx.editMessageText).not.toHaveBeenCalled();
+  });
 });
 
 describe("handleSetgymsCallback — gym toggle", () => {
