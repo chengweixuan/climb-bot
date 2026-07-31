@@ -21,7 +21,9 @@ Commands:
 /info - show this help message
 /chatid - show this chat ID
 /gyms - list all known gyms
-/climbwhere - vote on where to climb
+/setgyms - choose which gyms your group frequents
+/climbwhere - vote on where to climb (all gyms)
+/climbwhere2 - vote on where to climb (group's gyms)
 /climbwhen - vote on which days people are free
 /inspire - receive questionable climbing wisdom`;
 
