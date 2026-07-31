@@ -37,6 +37,8 @@ Stateless webhook architecture using grammY. No database, no persistent process 
 Environment variables (set in Vercel dashboard for production, `.env` for local dev):
 - `TELEGRAM_BOT_TOKEN` — required
 - `TELEGRAM_WEBHOOK_SECRET` — optional, verifies inbound requests from Telegram
+- `KV_REST_API_URL` — Vercel KV endpoint (set automatically by Vercel KV integration)
+- `KV_REST_API_TOKEN` — Vercel KV auth token (set automatically by Vercel KV integration)
 
 ## Running Tests
 
