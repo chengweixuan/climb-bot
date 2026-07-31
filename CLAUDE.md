@@ -4,7 +4,8 @@ Telegram bot that helps a climbing group in Singapore coordinate weekly sessions
 
 ## Capabilities
 
-- **Gym poll** (`/climbwhere`) — asks which gym to visit this week. Splits into multiple polls if >10 options.
+- **Gym preferences** (`/setgyms`) — multi-step inline button flow for each group to choose which gyms they frequent.
+- **Gym poll** (`/climbwhere`) — polls using the group's configured gyms. Splits into multiple polls if >10 options.
 - **Availability poll** (`/climbwhen`) — asks which days people are free. Supports "this week" or "next week" via inline buttons.
 - **Inspiration quotes** (`/inspire`) — sends a random climbing quote.
 - **Info commands** (`/start`, `/info`, `/chatid`, `/gyms`) — help text and diagnostics.
@@ -13,23 +14,26 @@ Telegram bot that helps a climbing group in Singapore coordinate weekly sessions
 
 ```
 api/
-  webhook.ts       — Vercel serverless entry point (grammY webhookCallback)
+  webhook.ts            — Vercel serverless entry point (grammY webhookCallback)
 src/
-  bot.ts           — bot setup, command registration
-  handlers.ts      — command handler implementations
-  config.ts        — JSON file loaders
+  bot.ts                — bot setup, command registration
+  handlers.ts           — command handler implementations (climbwhen, inspire, info, gyms)
+  climbwhere-handler.ts — /climbwhere poll using group preferences from KV
+  setgyms-handler.ts    — /setgyms multi-step configuration flow
+  gym-groups.ts         — groups gyms by brand for the selection UI
+  kv.ts                 — Vercel KV (Upstash Redis) storage layer
+  config.ts             — JSON file loaders
 scripts/
-  set-webhook.ts   — register/clear webhook URL with Telegram
+  set-webhook.ts        — register/clear webhook URL with Telegram
 ```
 
-Stateless webhook architecture using grammY. No database, no persistent process — each request is handled independently.
+Webhook architecture using grammY. Per-group gym preferences stored in Vercel KV (Upstash Redis).
 
 ## Data Files
 
 | File | Purpose |
 |------|---------|
 | `gyms.json` | Full reference list of Singapore climbing gyms |
-| `poll_gyms.json` | Subset of gyms included in the weekly poll |
 | `inspiration_quotes.json` | Quotes pool for `/inspire` |
 
 ## Configuration
