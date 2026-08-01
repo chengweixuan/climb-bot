@@ -28,7 +28,7 @@ export async function handleClimbwhere(ctx: CommandContext<Context>): Promise<vo
       chatId,
       buildPollQuestion(POLL_QUESTION, i + 1, groups.length),
       groups[i],
-      { is_anonymous: false, allows_multiple_answers: false }
+      { is_anonymous: false, allows_multiple_answers: true }
     );
   }
 }

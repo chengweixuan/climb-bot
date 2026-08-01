@@ -51,7 +51,7 @@ describe("handleClimbwhere", () => {
       123,
       "Where are we climbing this week?",
       ["Fit Bloc (Kent Ridge)", "Climba"],
-      expect.objectContaining({ is_anonymous: false, allows_multiple_answers: false })
+      expect.objectContaining({ is_anonymous: false, allows_multiple_answers: true })
     );
   });
 
