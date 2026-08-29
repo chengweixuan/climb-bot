@@ -62,7 +62,7 @@ export async function handleClimbwhenCallback(ctx: Context): Promise<void> {
   const data = ctx.callbackQuery?.data ?? "";
   const week = data.split(":")[1];
 
-  const now = new Date();
+  const now = new Date(new Date().toLocaleString("en-US", { timeZone: "Asia/Singapore" }));
   const dayOfWeek = now.getDay();
   const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
   const monday = new Date(now);
