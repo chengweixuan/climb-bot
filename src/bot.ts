@@ -8,6 +8,12 @@ import {
   handleInspire,
 } from "./handlers.js";
 import { handleSetgyms, handleSetgymsCallback } from "./setgyms-handler.js";
+import {
+  handleAddgym,
+  handleAddgymCallback,
+  handleRemovegym,
+  handleRemovegymCallback,
+} from "./addremovegyms-handler.js";
 import { handleClimbwhere } from "./climbwhere-handler.js";
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
@@ -22,7 +28,11 @@ bot.command("gyms", handleGyms);
 bot.command("climbwhere", handleClimbwhere);
 bot.command("climbwhen", handleClimbwhen);
 bot.command("setgyms", handleSetgyms);
+bot.command("addgym", handleAddgym);
+bot.command("removegym", handleRemovegym);
 bot.command("inspire", handleInspire);
 
 bot.callbackQuery(/^climbwhen:/, handleClimbwhenCallback);
 bot.callbackQuery(/^setgyms:/, handleSetgymsCallback);
+bot.callbackQuery(/^addgym:/, handleAddgymCallback);
+bot.callbackQuery(/^removegym:/, handleRemovegymCallback);
